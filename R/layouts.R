@@ -1,10 +1,10 @@
 get_layouts <- function() {
-  lay_dir <- path_package("hyderogen", "inst", "layouts")
+  lay_dir <- path_package("zeppelin", "inst", "layouts")
   path_rel(dir_ls(lay_dir, recursive = TRUE, type = "file"), lay_dir)
 }
 
 layout <- function(...) {
-  l_path <- path_package("hyderogen", "inst", "layouts", ...)
+  l_path <- path_package("zeppelin", "inst", "layouts", ...)
 
   structure(
     list(

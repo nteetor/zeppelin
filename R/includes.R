@@ -1,10 +1,10 @@
 get_includes <- function() {
-  inc_dir <- path_package("hyderogen", "inst", "includes")
+  inc_dir <- path_package("zeppelin", "inst", "includes")
   path_rel(dir_ls(inc_dir, recursive = TRUE, type = "file"), inc_dir)
 }
 
 include <- function(...) {
-  i_path <- path_package("hyderogen", "inst", "includes", ...)
+  i_path <- path_package("zeppelin", "inst", "includes", ...)
 
   structure(
     list(

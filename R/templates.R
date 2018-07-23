@@ -1,10 +1,10 @@
 get_templates <- function() {
-  tem_dir <- path_package("hyderogen", "inst", "templates")
+  tem_dir <- path_package("zeppelin", "inst", "templates")
   path_rel(dir_ls(tem_dir, recursive = TRUE, type = "file"), tem_dir)
 }
 
 template <- function(...) {
-  t_path <- path_package("hyderogen", "inst", "templates", ...)
+  t_path <- path_package("zeppelin", "inst", "templates", ...)
 
   structure(
     list(

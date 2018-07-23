@@ -1,31 +1,7 @@
-# hyderogen
+# zeppelin
 
 ![stability-wip](https://img.shields.io/badge/stability-work_in_progress-blue.svg)
 
-
-Turn your existing roxygen documentation into a jekyll site.
-
-## How it works
-
-- [x] `@family`s are converted into collections
-- [ ] bundle together docs with the same `@name`/`@rdname`
-- [x] docs without a `@family` are added to the `misc` collection
-- [x] generates default jekyll folder structure
-- [x] applies bootstrap-based stylings
-- [x] the majority of the site lives at `<url>/<pkg name>/docs/<pkg version>/`
-
-```R
-# remotes::install_github("nteetor/hyderogen")
-
-library(hyderogen)
-
-# WARNING, in it's current state this function will erase any existing files
-# in "<path to pkg>/docs"
-jekyll("<path to pkg>")
-
-browseURL("http://127.0.0.1:4000/<pkg name>/docs/<pkg version>/")
-```
-
-## Why?
-
-It's a toolset useful to me and I happen to like jekyll.
+This is a copy of https://github.com/nteetor/hyderogen tailored for the yonder
+package. Please refer to hyderogen for a more generic package to convert roxygen
+into a jekyll site.
