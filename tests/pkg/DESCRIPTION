@@ -1,0 +1,13 @@
+Package: pkg
+Version: 0.0.1
+Title: A simple package
+Description: The package that is simple.
+Authors@R: person("Nathan", "Teetor", , "nathanteetor@gmail.com", c("aut", "cre"))
+License: MIT
+Encoding: UTF-8
+LazyData: true
+ByteCompile: true
+RoxygenNote: 6.0.1.9000
+Roxygen: list(markdown = TRUE)
+Imports:
+    shiny

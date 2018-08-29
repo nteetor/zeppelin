@@ -4,7 +4,6 @@
 \name{zeppelin}
 \alias{zeppelin}
 \alias{zeppelin-package}
-\alias{zeppelin-package}
 \title{Build jekyll sites}
 \description{
 Site builder for https://github.com/nteetor/yonder.

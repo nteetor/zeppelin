@@ -1,15 +1,18 @@
+#' Write pages, templates, layouts
+#'
+#' Create final page files, layouts folder, etc.
+#'
+#' @export
 write_out <- function(x, ...) {
   UseMethod("write_out")
 }
 
-write_out.page <- function(x, ...) {
-  if (!length(attr(x, "path"))) {
-    # message("skipping ", x$roxygen$filename)
-    return(invisible())
-  }
+#' @export
+write_out.page <- function(x, dir = getwd(), ...) {
+  dest <- path(dir, x %@% "path", ext = "md")
 
-  dest <- path(getwd(), attr(x, "path"))
-  dir_create(path_dir(dest))
+  dir_create(path_dir(dest), recursive = TRUE)
+  file_create(dest)
 
   content <- c("---\n", as_yaml(x), "---\n")
 
@@ -39,8 +42,9 @@ write_out.template <- function(x, ...) {
   invisible()
 }
 
-write_out.layout <- function(x, ...) {
-  dest <- path(getwd(), "_layouts", x$rel_path)
+#' @export
+write_out.layout <- function(x, dir = getwd(), ...) {
+  dest <- path(dir, "_layouts", x$name)
   dir_create(path_dir(dest))
 
   tryCatch(
@@ -51,8 +55,9 @@ write_out.layout <- function(x, ...) {
   )
 }
 
-write_out.include <- function(x, ...) {
-  dest <- path(getwd(), "_includes", x$rel_path)
+#' @export
+write_out.include <- function(x, dir = getwd(), ...) {
+  dest <- path(dir, "_includes", x$name)
   dir_create(path_dir(dest))
 
   tryCatch(

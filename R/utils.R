@@ -19,3 +19,14 @@ cat0 <- function(..., sep = "") {
 slugify <- function(x) {
   tolower(gsub("([A-Z])", "-\\1", x, perl = TRUE))
 }
+
+`%then%` <- function(a, b) {
+  if (is.null(a) ||
+        is.na(a) ||
+        length(a) == 0 ||
+        nchar(a) == 0) {
+    NULL
+  } else {
+    b
+  }
+}

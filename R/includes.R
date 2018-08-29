@@ -1,21 +1,13 @@
 get_includes <- function() {
-  inc_dir <- path_package("zeppelin", "inst", "includes")
-  path_rel(dir_ls(inc_dir, recursive = TRUE, type = "file"), inc_dir)
-}
+  includes_dir <- path_package("zeppelin", "inst", "includes")
 
-include <- function(...) {
-  i_path <- path_package("zeppelin", "inst", "includes", ...)
-
-  structure(
-    list(
-      content = paste(readLines(i_path), collapse = "\n"),
-      rel_path = path(...)
-    ),
-    class = "include"
-  )
-}
-
-print.include <- function(x, ...) {
-  cat(x$content)
-  invisible(x)
+  map(dir_ls(includes_dir, recursive = TRUE, type = "file"), ~ {
+    structure(
+      list(
+        content = paste(readLines(.), collapse = "\n"),
+        name = path_file(.)
+      ),
+      class = "include"
+    )
+  })
 }

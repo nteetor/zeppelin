@@ -24,10 +24,11 @@ to prevent custom collections from accidentally being removed. This behaviour
 is subject to change.
 }
 \examples{
-\dontrun{
 
-jekyll("~/git/mypkg")
+## Creating your jekyll site
+1:5
 
-}
+## Another example
+shiny::tags$p("hello, world!")
 
 }

@@ -3,18 +3,8 @@ page_reduce <- function(x, y, ...) {
 }
 
 page_reduce.list <- function(x, y, ...) {
-  if (!inherits(y, "page")) {
-    browser()
-  }
-
   if (page_name(y) %in% map_chr(x, page_name)) {
-    tryCatch(
-      map_if(x, ~ page_name(.) == page_name(y), ~ page_merge(., y)),
-      error = function(e) {
-        browser()
-      }
-    )
-
+    map_if(x, ~ page_name(.) == page_name(y), ~ page_merge(., y))
   } else {
     c(x, list(y))
   }
