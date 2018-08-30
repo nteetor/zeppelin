@@ -44,9 +44,9 @@ as_page.roxy_block <- function(x, package = ".", ...) {
         map(this[this != ""], ~ {
           . <- strsplit(., "\\n+")[[1]]
 
-          title <- paste("## ", .[1])
+          title <- .[1]
           source <- paste(.[-1], collapse = "\n")
-          output <- eval(parse(text = source))
+          output <- as.character(eval(parse(text = source)))
 
           list(
             title = title,

@@ -67,3 +67,18 @@ write_out.include <- function(x, dir = getwd(), ...) {
     }
   )
 }
+
+#' @export
+write_out.asset <- function(x, dir = getwd(), ...) {
+  dest <- path(dir, "_sass", x$name)
+  dir_create(path_dir(dest))
+
+  tryCatch(
+    cat(x$content, file = dest),
+    error = function(e) {
+      warning("failed to create asset ", dest, call. = FALSE)
+    }
+  )
+
+  invisible(x$name)
+}

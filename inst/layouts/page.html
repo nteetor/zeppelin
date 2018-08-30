@@ -35,13 +35,13 @@
           {% endfor %}
 
           {% for example in page.roxygen.examples %}
-          {{ example.title | markdownify }}
-          <a href="#example-{{ example.title | slugify }}">source</a>
-          <div id="example-{{ example.title | slugify }}" class="collapse">
-            {% highlight r %}
-            {{ example.source }}
-            {% endhighlight %}
+          <div>
+            <h2 class="d-inline-block">{{ example.title }}</h2>
+            <a class="ml-3" href="#example-{{ example.title | slugify }}" data-toggle="collapse">source</a>
           </div>
+
+          <div id="example-{{ example.title | slugify }}" class="collapse">{% highlight r %}{{ example.source }}{% endhighlight %}</div>
+
           {{ example.output }}
           {% endfor %}
 

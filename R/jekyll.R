@@ -61,5 +61,13 @@ jekyll <- function(pkg = ".", dir = "docs") {
   message("Writing includes")
   walk(get_includes(), write_out, dir = base_dir)
 
+  message("Writing assets")
+  assets <- map(get_assets(), write_out, dir = base_dir)
+
+  sass <- path_filter(assets, glob = "*.scss")
+  create_main_scss(sass, dir = base_dir)
+
+
+
   invisible()
 }
