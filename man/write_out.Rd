@@ -9,3 +9,4 @@ write_out(x, ...)
 \description{
 Create final page files, layouts folder, etc.
 }
+\concept{output}

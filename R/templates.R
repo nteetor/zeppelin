@@ -1,21 +1,13 @@
 get_templates <- function() {
-  tem_dir <- path_package("zeppelin", "inst", "templates")
-  path_rel(dir_ls(tem_dir, recursive = TRUE, type = "file"), tem_dir)
-}
+  templates_dir <- path_package("zeppelin", "inst", "templates")
 
-template <- function(...) {
-  t_path <- path_package("zeppelin", "inst", "templates", ...)
-
-  structure(
-    list(
-      content = paste(readLines(t_path), collapse = "\n"),
-      rel_path = path(...)
-    ),
-    class = "template"
-  )
-}
-
-print.template <- function(x, ...) {
-  cat(x$content)
-  invisible(x)
+  map(dir_ls(templates_dir, recursive = TRUE, type = "file"), ~ {
+    structure(
+      list(
+        content = paste(readLines(.), collapse = "\n"),
+        name = path_file(.)
+      ),
+      class = "template"
+    )
+  })
 }

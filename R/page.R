@@ -2,6 +2,7 @@
 #'
 #' For now, takes a roxygen block and converts it to a page.
 #'
+#' @family structure
 #' @export
 as_page <- function(x, ...) {
   UseMethod("as_page")
@@ -72,7 +73,7 @@ as_page.roxy_block <- function(x, package = ".", ...) {
 
   structure(
     list(
-      name = name,
+      this = name,
       filename = path_rel(attr(x, "filename"), package),
       layout = "page",
       roxygen = list(

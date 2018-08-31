@@ -2,6 +2,7 @@
 #'
 #' Create final page files, layouts folder, etc.
 #'
+#' @family output
 #' @export
 write_out <- function(x, ...) {
   UseMethod("write_out")
@@ -26,16 +27,17 @@ write_out.page <- function(x, dir = getwd(), ...) {
   invisible()
 }
 
-write_out.template <- function(x, ...) {
-  filled <- glue::glue(x$content, .envir = parent.frame())
+#' @export
+write_out.template <- function(x, dir = getwd(), ...) {
+  filled <- glue::glue(x$content, .envir = parent.frame(2))
 
-  dest <- path(getwd(), x$rel_path)
+  dest <- path(dir, x$name)
   dir_create(path_dir(dest))
 
   tryCatch(
     cat(filled, file = dest),
     error = function(e) {
-      message("failed to create template ", dest)
+      warning("failed to create template ", dest, call. = FALSE)
     }
   )
 

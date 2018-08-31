@@ -43,13 +43,6 @@ jekyll <- function(pkg = ".", dir = "docs") {
 
   pages <- map(blocks, as_page, package = pkg)
 
-  ## with_environment(build_env, {
-  ##   pages <- map(pages, ~ {
-  ##     .$uri <- glue(.$uri)
-  ##     .
-  ##   })
-  ## })
-
   dir_create(base_dir)
 
   message("Writing pages")
@@ -67,7 +60,12 @@ jekyll <- function(pkg = ".", dir = "docs") {
   sass <- path_filter(assets, glob = "*.scss")
   create_main_scss(sass, dir = base_dir)
 
+  get_versions <- function() {
+    path_file(dir_ls(base_dir, type = "directory", regexp = "[0-9][0-9.]*"))
+  }
 
+  message("Writing templates")
+  walk(get_templates(), write_out, dir = base_dir)
 
   invisible()
 }

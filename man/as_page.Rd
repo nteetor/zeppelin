@@ -9,3 +9,4 @@ as_page(x, ...)
 \description{
 For now, takes a roxygen block and converts it to a page.
 }
+\concept{structure}
