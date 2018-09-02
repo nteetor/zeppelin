@@ -1,15 +1,11 @@
-#' Convert to page
-#'
-#' For now, takes a roxygen block and converts it to a page.
-#'
-#' @family structure
 #' @export
 as_page <- function(x, ...) {
   UseMethod("as_page")
 }
 
 #' @export
-as_page.roxy_block <- function(x, package = ".", ...) {
+as_page.roxy_block <- function(x, package = ".", env = env_package(package),
+                               ...) {
   if (!inherits(x, "roxy_block")) {
     stop(
       "invalid `as_page()` argument, `x` must be a roxygen block",
@@ -17,11 +13,24 @@ as_page.roxy_block <- function(x, package = ".", ...) {
     )
   }
 
+  if (is.null(x$descripion %||% x$title %||% x$rdname)) {
+    return(NULL)
+  }
+
   package <- path_abs(package)
+
+  description <- {
+    if (!is.null(x$description)) {
+      replace_links(x$description, package)
+    }
+  }
 
   parameters <- {
     if ("param" %in% names(x)) {
-      unname(x[names(x) == "param"])
+      map(unname(x[names(x) == "param"]), ~ {
+        .$description <- replace_links(.$description, package)
+        .
+      })
     } else {
       list()
     }
@@ -30,9 +39,10 @@ as_page.roxy_block <- function(x, package = ".", ...) {
   sections <- {
     if ("section" %in% names(x)) {
       map(unname(x[names(x) == "section"]), ~ {
-        split <- strsplit(., ":\n\n", fixed = TRUE)[[1]]
+        split <- as.list(strsplit(., ":\n\n", fixed = TRUE)[[1]])
         names(split) <- c("title", "body")
-        as.list(split)
+        split$body <- replace_links(split$body, package)
+        split
       })
     }
   }
@@ -41,28 +51,28 @@ as_page.roxy_block <- function(x, package = ".", ...) {
     if ("examples" %in% names(x)) {
       this <- strsplit(x$examples, "\\n##\\s+", perl = TRUE)[[1]]
 
-      with_package(path_file(package), {
-        map(this[this != ""], ~ {
-          . <- strsplit(., "\\n+")[[1]]
+      map(this[!(this %in% c("", "\n"))], ~ {
+        . <- strsplit(., "\\n+")[[1]]
 
-          title <- .[1]
-          source <- paste(.[-1], collapse = "\n")
-          output <- as.character(eval(parse(text = source)))
+        title <- .[1]
+        source <- paste(.[-1], collapse = "\n")
+        output <- as.character(eval(parse(text = source), envir = env))
 
-          list(
-            title = title,
-            source = source,
-            output = output
-          )
-        })
+        list(
+          title = title,
+          source = source,
+          output = output
+        )
       })
     }
   }
 
   name <- if (length(x %@% "call") > 1) {
     as.character((x %@% "call")[[2]])
+  } else if (length(x %@% "call") == 1) {
+    x %@% "call"
   } else {
-    ""
+    x$name
   }
 
   uri <- path(
@@ -75,18 +85,34 @@ as_page.roxy_block <- function(x, package = ".", ...) {
     list(
       this = name,
       filename = path_rel(attr(x, "filename"), package),
-      layout = "page",
+      layout = x$layout %||% "page",
       roxygen = list(
         title = x$title,
-        description = x$description,
+        description = description,
         parameters = parameters,
         sections = sections,
         `return` = x$`return`,
         family = x$family,
+        name = x$name,
+        rdname = x$rdname,
         examples = examples
       )
     ),
     path = uri,
     class = "page"
   )
+}
+
+replace_links <- function(x, package) {
+  if (grepl("\\[[^]]+\\]", x)) {
+    with_dir(package, {
+      stringr::str_replace_all(
+        x,
+        "\\[([^]]+)\\]",
+        glue('[\\1](/{ desc_get("Package") }/{ desc_get("Version") }/\\1.html)')
+      )
+    })
+  } else {
+    x
+  }
 }

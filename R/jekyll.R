@@ -25,6 +25,8 @@
 #' ## Another example
 #' shiny::tags$p("hello, world!")
 #'
+#' "hello" %>% paste("world")
+#'
 jekyll <- function(pkg = ".", dir = "docs") {
   base_dir <- path(pkg, dir)
   r_dir <- path(pkg, "R")
@@ -37,11 +39,32 @@ jekyll <- function(pkg = ".", dir = "docs") {
   }
 
   tag_registry <- roxygen2:::default_tags()
-  tag_registry$examples <- roxygen2::tag_examples
+  tag_registry$examples <- function(x) x #roxygen2::tag_examples
+  tag_registry$layout <- function(x) x
 
   blocks <- parse_package(pkg, env = NULL, registry = tag_registry)
 
-  pages <- map(blocks, as_page, package = pkg)
+  message("Creating pages")
+
+  env <- suppressMessages(env_package(pkg))
+
+  pages <- compact(map(blocks, as_page, package = pkg, env = env))
+
+  names(pages) <- map_chr(pages, ~ .$roxygen$name %||% .$this)
+
+  pages <- map(pages, ~ {
+    if (is.null(.$roxygen$rdname)) {
+      return(.)
+    }
+
+    new <- pages[names(pages) == .$roxygen$rdname][[1]]
+    new$this <- .$this
+    new$filename <- .$filename
+
+    attr(new, "path") <- path(path_dir(new %@% "path"), path_file(. %@% "path"))
+
+    new
+  })
 
   dir_create(base_dir)
 

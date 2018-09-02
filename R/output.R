@@ -29,7 +29,9 @@ write_out.page <- function(x, dir = getwd(), ...) {
 
 #' @export
 write_out.template <- function(x, dir = getwd(), ...) {
-  filled <- glue::glue(x$content, .envir = parent.frame(2))
+  with_dir(path_dir(dir), {
+    filled <- glue::glue(x$content, .envir = parent.frame(2))
+  })
 
   dest <- path(dir, x$name)
   dir_create(path_dir(dest))

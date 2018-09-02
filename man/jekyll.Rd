@@ -31,4 +31,6 @@ is subject to change.
 ## Another example
 shiny::tags$p("hello, world!")
 
+"hello" \%>\% paste("world")
+
 }
