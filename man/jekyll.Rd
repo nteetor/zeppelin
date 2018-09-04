@@ -23,14 +23,3 @@ changed then the old, corresponding collection will not be deleted. This is
 to prevent custom collections from accidentally being removed. This behaviour
 is subject to change.
 }
-\examples{
-
-## Creating your jekyll site
-1:5
-
-## Another example
-shiny::tags$p("hello, world!")
-
-"hello" \%>\% paste("world")
-
-}

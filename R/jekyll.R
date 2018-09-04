@@ -17,16 +17,6 @@
 #' is subject to change.
 #'
 #' @export
-#' @examples
-#'
-#' ## Creating your jekyll site
-#' 1:5
-#'
-#' ## Another example
-#' shiny::tags$p("hello, world!")
-#'
-#' "hello" %>% paste("world")
-#'
 jekyll <- function(pkg = ".", dir = "docs") {
   base_dir <- path(pkg, dir)
   r_dir <- path(pkg, "R")
@@ -68,6 +58,8 @@ jekyll <- function(pkg = ".", dir = "docs") {
 
   dir_create(base_dir)
 
+  dir_delete(path(base_dir, desc_get("Version", pkg)))
+
   message("Writing pages")
   walk(pages, write_out, dir = base_dir)
 
@@ -89,6 +81,25 @@ jekyll <- function(pkg = ".", dir = "docs") {
 
   message("Writing templates")
   walk(get_templates(), write_out, dir = base_dir)
+
+  file_copy(
+    path(pkg, "inst", "www", "yonder", "css", "yonder.min.css"),
+    path(base_dir, "assets", "css", "yonder.min.css"),
+    overwrite = TRUE
+  )
+
+  file_copy(
+    path(pkg, "inst", "www", "bootstrap", "css", "bootstrap.min.css"),
+    path(base_dir, "assets", "css", "bootstrap.min.css"),
+    overwrite = TRUE
+  )
+
+  dir_create(base_dir, "assets", "js")
+  file_copy(
+    path(pkg, "inst", "www", "bootstrap", "js", "bootstrap.min.js"),
+    path(base_dir, "assets", "js", "bootstrap.min.js"),
+    overwrite = TRUE
+  )
 
   invisible()
 }
