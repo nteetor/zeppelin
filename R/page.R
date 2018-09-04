@@ -55,8 +55,14 @@ as_page.roxy_block <- function(x, package = ".", env = env_package(package),
         . <- strsplit(., "\\n+")[[1]]
 
         title <- .[1]
-        source <- paste(.[-1], collapse = "\n")
-        output <- as.character(eval(parse(text = source), envir = env))
+        source <- paste(.[-1], collapse = "\n\n")
+        output <- compact(map(parse(text = source), ~ {
+          res <- eval(., envir = env)
+
+          if (inherits(res, "shiny.tag")) {
+            as.character(res)
+          }
+        }))
 
         list(
           title = title,
