@@ -32,6 +32,7 @@
           {% endfor %}
 
           {% for example in page.roxygen.examples %}
+          {% if example.title.size > 0 %}
           <div class="mb-4">
             <h3 class="d-inline-block">{{ example.title }}</h3>
 
@@ -48,6 +49,7 @@
             {% endfor %}
 
           </div>
+          {% endif %}
           {% endfor %}
 
         </div>
