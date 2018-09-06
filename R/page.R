@@ -55,7 +55,7 @@ as_page.roxy_block <- function(x, package = ".", env = env_package(package),
         . <- strsplit(., "\\n+")[[1]]
 
         title <- .[1]
-        source <- paste(.[-1], collapse = "\n\n")
+        source <- paste(.[-1], collapse = "\n")
         output <- compact(map(parse(text = source), ~ {
           res <- eval(., envir = env)
 
@@ -76,7 +76,11 @@ as_page.roxy_block <- function(x, package = ".", env = env_package(package),
   name <- if (length(x %@% "call") > 1) {
     as.character((x %@% "call")[[2]])
   } else if (length(x %@% "call") == 1) {
-    x %@% "call"
+    if (x %@% "call" == "_PACKAGE") {
+      "index"
+    } else {
+      x %@% "call"
+    }
   } else {
     x$name
   }
