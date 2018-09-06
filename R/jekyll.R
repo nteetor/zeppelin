@@ -82,24 +82,27 @@ jekyll <- function(pkg = ".", dir = "docs") {
   message("Writing templates")
   walk(get_templates(), write_out, dir = base_dir)
 
-  file_copy(
-    path(pkg, "inst", "www", "yonder", "css", "yonder.min.css"),
-    path(base_dir, "assets", "css", "yonder.min.css"),
-    overwrite = TRUE
-  )
+  dir_delete(path(base_dir, "www"))
+  dir_copy(path(pkg, "inst", "www"), path(base_dir))
 
-  file_copy(
-    path(pkg, "inst", "www", "bootstrap", "css", "bootstrap.min.css"),
-    path(base_dir, "assets", "css", "bootstrap.min.css"),
-    overwrite = TRUE
-  )
+  ## file_copy(
+  ##   path(pkg, "inst", "www", "yonder", "css", "yonder.min.css"),
+  ##   path(base_dir, "assets", "css", "yonder.min.css"),
+  ##   overwrite = TRUE
+  ## )
 
-  dir_create(base_dir, "assets", "js")
-  file_copy(
-    path(pkg, "inst", "www", "bootstrap", "js", "bootstrap.min.js"),
-    path(base_dir, "assets", "js", "bootstrap.min.js"),
-    overwrite = TRUE
-  )
+  ## file_copy(
+  ##   path(pkg, "inst", "www", "bootstrap", "css", "bootstrap.min.css"),
+  ##   path(base_dir, "assets", "css", "bootstrap.min.css"),
+  ##   overwrite = TRUE
+  ## )
+
+  ## dir_create(base_dir, "assets", "js")
+  ## file_copy(
+  ##   path(pkg, "inst", "www", "bootstrap", "js", "bootstrap.min.js"),
+  ##   path(base_dir, "assets", "js", "bootstrap.min.js"),
+  ##   overwrite = TRUE
+  ## )
 
   invisible()
 }
