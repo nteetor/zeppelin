@@ -49,27 +49,38 @@ as_page.roxy_block <- function(x, package = ".", env = env_package(package),
 
   examples <- {
     if ("examples" %in% names(x)) {
-      this <- strsplit(x$examples, "\\n##\\s+", perl = TRUE)[[1]]
+      .sections <- tryCatch(
+        parse_examples(x$examples),
+        error = function(e) {
+          stop(
+            "could not parse examples in ", x %@% "filename",
+            call. = FALSE
+          )
+        }
+      )
 
-      map(this[!(this %in% c("", "\n"))], ~ {
-        . <- strsplit(., "\\n+")[[1]]
+      compact(map(.sections, ~ {
+        if (is.null(.$value) ||
+            length(.$value) == 0 ||
+            (is.character(.$value) && !nzchar(.$value))) {
+          return(NULL)
+        }
 
-        title <- .[1]
-        source <- paste(.[-1], collapse = "\n")
-        output <- compact(map(parse(text = source), ~ {
-          res <- eval(., envir = env)
+        if (.$type == "output") {
+          result <- eval(.$value, envir = env)
 
-          if (inherits(res, "shiny.tag")) {
-            as.character(res)
+          if (inherits(result, "shiny.tag")) {
+            .$value <- as.character(result)
+          } else if (class(result)[1] == "list") {
+            .$value <- paste(map_chr(result, as.character), collapse = "\n")
+          } else {
+            .$type <- "code"
+            .$value <- as.character(.$value)
           }
-        }))
+        }
 
-        list(
-          title = title,
-          source = source,
-          output = output
-        )
-      })
+        .
+      }))
     }
   }
 
@@ -125,4 +136,69 @@ replace_links <- function(x, package) {
   } else {
     x
   }
+}
+
+type_markdown <- function(value) {
+  list(
+    type = "markdown",
+    value = commonmark::markdown_html(value)
+  )
+}
+
+type_output <- function(value) {
+  list(
+    type = "output",
+    value = parse(text = value)
+  )
+}
+
+type_source <- function(value) {
+  list(
+    type = "source",
+    value = value
+  )
+}
+
+parse_examples <- function(x) {
+  tokens <- sourcetools::tokenize_string(x)
+
+  if (all(tokens$type == "whitespace")) {
+    return(list())
+  }
+
+  sections <- tokens %>%
+    group_by(row) %>%
+    summarise(
+      value = paste(value, collapse = ""),
+      type = if (length(type) > 1) "code" else type
+    ) %>%
+    mutate(
+      type = dplyr::case_when(
+        type == "comment" ~ "comment",
+        type == "whitespace" & value == "\\n\\n" ~ "whitespace",
+        TRUE ~ "code"
+      ),
+      type2 = dplyr::lag(type, default = type[1]),
+      inc = as.double(type != type2),
+      order = accumulate(inc, `+`)
+    ) %>%
+    group_by(order) %>%
+    summarise(
+      value = paste(value, collapse = ""),
+      value = gsub("\n#", "", value, fixed = TRUE),
+      value = gsub("\\n\\s*$", "", value),
+      value = gsub("^# ", "", value),
+      type = unique(type)
+    )
+
+  flatten(map2(sections$value, sections$type, ~ {
+    if (.y == "comment") {
+      return(list(type_markdown(.x)))
+    }
+
+    list(
+      type_source(.x),
+      type_output(.x)
+    )
+  }))
 }

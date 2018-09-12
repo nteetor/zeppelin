@@ -13,5 +13,7 @@
 #'
 #' @import purrr fs glue yaml roxygen2 withr desc
 #'
+#' @importFrom dplyr group_by summarise mutate filter if_else
+#'
 #' @name zeppelin
 "_PACKAGE"
