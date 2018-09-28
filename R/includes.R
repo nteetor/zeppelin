@@ -1,5 +1,5 @@
 get_includes <- function() {
-  includes_dir <- path_package("zeppelin", "inst", "includes")
+  includes_dir <- system.file("includes", package = "zeppelin")
 
   map(dir_ls(includes_dir, recursive = TRUE, type = "file"), ~ {
     structure(

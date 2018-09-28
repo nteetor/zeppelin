@@ -1,5 +1,5 @@
 get_layouts <- function() {
-  layouts_dir <- path_package("zeppelin", "inst", "layouts")
+  layouts_dir <- system.file("layouts", package = "zeppelin")
 
   map(dir_ls(layouts_dir, recursive = TRUE, type = "file"), ~ {
     structure(

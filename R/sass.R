@@ -1,5 +1,5 @@
 get_assets <- function() {
-  sass_dir <- path_package("zeppelin", "inst", "sass")
+  sass_dir <- system.file("sass", package = "zeppelin")
 
   assets_files <- flatten_chr(map(c(sass_dir), dir_ls, type = "file"))
 

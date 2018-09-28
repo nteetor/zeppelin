@@ -1,5 +1,5 @@
 get_templates <- function() {
-  templates_dir <- path_package("zeppelin", "inst", "templates")
+  templates_dir <- system.file("templates", package = "zeppelin")
 
   map(dir_ls(templates_dir, recursive = TRUE, type = "file"), ~ {
     structure(
