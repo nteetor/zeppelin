@@ -127,11 +127,17 @@ as_page.roxy_block <- function(x, package = ".", env = env_package(package),
 replace_links <- function(x, package) {
   if (grepl("\\[[^]]+\\]", x)) {
     with_dir(package, {
-      stringr::str_replace_all(
+      x <- stringr::str_replace_all(
         x,
-        "\\[([^]]+)\\]",
-        glue('[\\1](/{ desc_get("Package") }/{ desc_get("Version") }/\\1.html)')
+        "([^\\[])\\[([a-zA-Z][a-zA-Z0-9]*)\\]",
+        glue('\\1[\\2](/{ desc_get("Package") }/{ desc_get("Version") }/{{: get_family("\\2") :}}\\2.html)')
       )
+      x <- stringr::str_replace_all(
+        x,
+        "([^\\[])\\[([a-zA-Z][a-zA-Z0-9]*)\\(\\)\\]",
+        glue('\\1[\\2()](/{ desc_get("Package") }/{ desc_get("Version") }/{{: get_family("\\2") :}}\\2.html)')
+      )
+      x
     })
   } else {
     x
