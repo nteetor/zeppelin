@@ -42,6 +42,11 @@ jekyll <- function(pkg = ".", dir = "docs") {
 
   names(pages) <- map_chr(pages, ~ .$roxygen$name %||% .$this)
 
+  get_family <- function(p) {
+    res <- pages[[p]]$roxygen$family %||% ""
+    if (res == "") res else paste0(res, "/")
+  }
+
   pages <- map(pages, ~ {
     if (is.null(.$roxygen$rdname)) {
       return(.)
@@ -54,6 +59,20 @@ jekyll <- function(pkg = ".", dir = "docs") {
     attr(new, "path") <- path(path_dir(new %@% "path"), path_file(. %@% "path"))
 
     new
+  })
+
+  # expand links with correct families
+  pages <- map(pages, ~ {
+    .$roxygen$description <- glue(.$roxygen$description, .open = "{:", .close = ":}")
+    .$roxygen$parameters <- map(.$roxygen$parameters, function(p) {
+      p$description <- glue(p$description, .open = "{:", .close = ":}")
+      p
+    })
+    .$roxygen$sections <- map(.$roxygen$sections, function(s) {
+      s$body <- glue(s$body, .open = "{:", .close = ":}")
+      s
+    })
+    .
   })
 
   dir_create(base_dir)
