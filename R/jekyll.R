@@ -17,7 +17,7 @@
 #' is subject to change.
 #'
 #' @export
-jekyll <- function(pkg = ".", dir = "docs") {
+build_jekyll <- function(pkg = ".", dir = "docs") {
   base_dir <- path(pkg, dir)
   r_dir <- path(pkg, "R")
 
