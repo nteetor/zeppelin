@@ -107,6 +107,7 @@ as_page.roxy_block <- function(x, package = ".", env = env_package(package),
       this = name,
       filename = path_rel(attr(x, "filename"), package),
       layout = x$layout %||% "page",
+      requires = x$requires,
       roxygen = list(
         title = x$title,
         description = description,
