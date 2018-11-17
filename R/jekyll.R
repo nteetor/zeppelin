@@ -31,6 +31,7 @@ build_jekyll <- function(pkg = ".", dir = "docs") {
   tag_registry <- roxygen2:::default_tags()
   tag_registry$examples <- function(x) x #roxygen2::tag_examples
   tag_registry$layout <- function(x) x
+  tag_registry$requires <- function(x) x
 
   blocks <- parse_package(pkg, env = NULL, registry = tag_registry)
 
